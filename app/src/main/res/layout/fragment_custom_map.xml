@@ -1,8 +1,85 @@
-<fragment android:id="@+id/map"
-          class="com.google.android.gms.maps.MapFragment"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:map="http://schemas.android.com/apk/res-auto"
-          xmlns:tools="http://schemas.android.com/tools"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          tools:context="callisto.quotermvp.map.CustomMapFragment"/>
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/panelContainer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:extended="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="callisto.quotermvp.map.CustomMapFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <fragment
+            android:id="@+id/map"
+            class="com.google.android.gms.maps.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <!--<com.github.clans.fab.FloatingActionButton-->
+        <!--android:id="@+id/fabAdd"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="@dimen/spacing_medium"-->
+        <!--android:src="@android:drawable/ic_input_add"-->
+        <!--android:visibility="gone"-->
+        <!--extended:fab_colorNormal="@color/colorPrimary"-->
+        <!--extended:fab_colorPressed="@color/colorPrimaryDark"-->
+        <!--extended:fab_colorRipple="@color/textColorSecondary"-->
+        <!--extended:layout_anchor="@id/map"-->
+        <!--extended:layout_anchorGravity="bottom|right|end"/>-->
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fabMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_medium"
+        android:visibility="gone"
+        extended:fab_colorNormal="@color/colorPrimary"
+        extended:fab_colorPressed="@color/colorPrimaryDark"
+        extended:fab_colorRipple="@color/textColorSecondary"
+        extended:layout_anchor="@id/map"
+        extended:layout_anchorGravity="bottom|right|end">
+        <!--android:paddingBottom="117dp"-->
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_plus"
+            extended:fab_colorNormal="@color/fab_add_light"
+            extended:fab_colorPressed="@color/fab_add"
+            extended:fab_colorRipple="@color/fab_add_dark"
+            extended:fab_size="mini"
+            />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit"
+            extended:fab_colorNormal="@color/fab_edit_light"
+            extended:fab_colorPressed="@color/fab_edit"
+            extended:fab_colorRipple="@color/fab_edit_dark"
+            extended:fab_size="mini"
+            />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete"
+            extended:fab_colorNormal="@color/fab_delete_light"
+            extended:fab_colorPressed="@color/fab_delete"
+            extended:fab_colorRipple="@color/fab_delete_dark"
+            extended:fab_size="mini"
+            />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
+</android.support.design.widget.CoordinatorLayout>

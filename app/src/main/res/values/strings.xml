@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">QuoterMvp</string>
+
     <string name="title_activity_maps">Map</string>
+    <string name="label_address">Address:</string>
+    <string name="dialog_title_address_input">Enter address</string>
+
+    <string name="tag_event_fired">Event fired</string>
+    <string name="tag_event_map_marker_trigger">Map marker addition event trigger captured</string>
+    <string name="tag_event_rx_android_geocoding_observed">Map marker addition event trigger captured</string>
+    <string name="tag_event_geocoding_request">Address entered for geocoding request</string>
 </resources>

@@ -11,6 +11,8 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -37,7 +39,9 @@ dependencies {
     compile "com.squareup:otto:$rootProject.ext.ottoVersion"
     compile "com.google.guava:guava:$rootProject.ext.guavaVersion"
     compile "io.realm:android-adapters:$rootProject.ext.realmAdaptersVersion"
-//    compile "org.easyrules:easyrules-spring:$rootProject.ext.easyRulesVersion"
+    compile "com.github.clans:fab:$rootProject.ext.floatingMenuVersion"
+    compile "io.reactivex:rxandroid:$rootProject.ext.rxAndroidVersion"
+    compile "io.reactivex:rxjava:$rootProject.ext.rxJavaVersion"
 
     compile "com.google.android.gms:play-services:$rootProject.ext.playServicesVersion"
     compile "com.google.android.gms:play-services-location:$rootProject.ext.playServicesVersion"

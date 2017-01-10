@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#F44336</color>
+    <color name="colorPrimaryDark">#D32F2F</color>
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#727272</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="colorAccent">#FF5252</color>
+    <color name="colorIcons">#FFFFFF</color>
+    <color name="colorDivider">#B6B6B6</color>
+    <!-- End of material design stuff-->
+
+    <color name="fab_accept_background">#00dd33</color>
+    <color name="fab_reject_background">#dd0022</color>
+    <color name="card_label_background">#ff444444</color>
+
+    <color name="fab_edit_light">#448AFF</color>
+    <color name="fab_edit">#3F51B5</color>
+    <color name="fab_edit_dark">#303F9F</color>
+
+    <color name="fab_add_light">#43A047</color>
+    <color name="fab_add">#2E7D32</color>
+    <color name="fab_add_dark">#1B5E20</color>
+
+    <color name="fab_delete_light">#F50057</color>
+    <color name="fab_delete">#E8004A</color>
+    <color name="fab_delete_dark">#C20024</color>
+
 </resources>

@@ -36,7 +36,7 @@ public class CustomMapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_custom_map, container, false);
-        createPresenter();
+        createPresenter(view);
         return view;
     }
 
@@ -52,7 +52,7 @@ public class CustomMapFragment extends Fragment {
         BusProvider.unregister(presenter);
     }
 
-    private void createPresenter() {
-        presenter = new CustomMapPresenter(new CustomMapModel(), new CustomMapView(this, BusProvider.getInstance()));
+    private void createPresenter(View view) {
+        presenter = new CustomMapPresenter(new CustomMapModel(), new CustomMapView(this, view, BusProvider.getInstance()));
     }
 }
