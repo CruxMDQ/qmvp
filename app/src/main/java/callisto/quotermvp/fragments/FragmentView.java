@@ -32,12 +32,6 @@ public class FragmentView {
     }
 
     @Nullable
-    protected FragmentManager getFragmentManager() {
-        Activity activity = getActivity();
-        return (activity != null) ? activity.getFragmentManager() : null;
-    }
-
-    @Nullable
     public FragmentManager getChildFragmentManager() {
         Fragment f = fragmentRef.get();
         return (f == null) ? null : f.getChildFragmentManager();
@@ -47,6 +41,12 @@ public class FragmentView {
     public void unbind() {
         unbinder.unbind();
     }
+
+//    @Nullable
+//    protected FragmentManager getFragmentManager() {
+//        Activity activity = getActivity();
+//        return (activity != null) ? activity.getFragmentManager() : null;
+//    }
 
 //    @SuppressWarnings("ConstantConditions")
 //    public void setToolbarTitle(String title) {

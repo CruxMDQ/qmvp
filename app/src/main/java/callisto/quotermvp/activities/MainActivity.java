@@ -8,8 +8,6 @@ import callisto.quotermvp.map.CustomMapFragment;
 
 public class MainActivity extends FragmentActivity {
 
-//    private GoogleMap mMap;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -7,6 +7,7 @@
 
     <string name="tag_event_fired">Event fired</string>
     <string name="tag_event_map_marker_trigger">Map marker addition event trigger captured</string>
-    <string name="tag_event_rx_android_geocoding_observed">Map marker addition event trigger captured</string>
     <string name="tag_event_geocoding_request">Address entered for geocoding request</string>
+    <string name="tag_event_map_report_ready">Map reports ready for work</string>
+    <string name="tag_event_created_placed_marker">Created and placed new marker</string>
 </resources>

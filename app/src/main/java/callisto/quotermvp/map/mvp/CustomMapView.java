@@ -1,6 +1,7 @@
 package callisto.quotermvp.map.mvp;
 
 import android.app.Fragment;
+import android.util.Log;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -15,11 +16,9 @@ import com.squareup.otto.Bus;
 
 import callisto.quotermvp.R;
 import callisto.quotermvp.fragments.FragmentView;
-import callisto.quotermvp.tools.Events;
 
-/**
- * Created by emiliano.desantis on 06/01/2017.
- */
+import static callisto.quotermvp.tools.Events.AddMarkerEvent;
+import static callisto.quotermvp.tools.Events.OnMapReadyEvent;
 
 public class CustomMapView extends FragmentView
     implements OnMapReadyCallback {
@@ -47,7 +46,7 @@ public class CustomMapView extends FragmentView
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bus.post(new Events.AddMarkerEvent());
+                bus.post(new AddMarkerEvent());
             }
         });
 
@@ -71,12 +70,35 @@ public class CustomMapView extends FragmentView
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        // Snippet kept for debugging purposes
+//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//            @Override
+//            public void onMapClick(LatLng arg0) {
+//                mMap.clear();
+//
+//                mMap.addMarker(new MarkerOptions()
+//                    .position(arg0)
+//                    .title("Location")
+//                    .snippet(arg0.latitude + ", " + arg0.longitude));
+//            }
+//        });
+
         fabMenu.setVisibility(View.VISIBLE);
+
+        bus.post(new OnMapReadyEvent());
     }
 
     void addMapMarker(LatLng latLng) {
+        Log.d(getContext().getString(R.string.tag_event_fired),
+            getContext().getString(R.string.tag_event_created_placed_marker));
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("Location");
         mMap.addMarker(markerOptions);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+    }
+
+    void centerOnStartingPosition(LatLng startingPosition, int defaultZoom) {
+        MarkerOptions markerOptions = new MarkerOptions().position(startingPosition);
+        mMap.addMarker(markerOptions);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startingPosition, defaultZoom));
     }
 }

@@ -5,10 +5,11 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+
+import com.squareup.otto.Bus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,11 +17,13 @@ import butterknife.Unbinder;
 import callisto.quotermvp.R;
 import callisto.quotermvp.map.mvp.CustomMapPresenter;
 import callisto.quotermvp.tools.BusProvider;
+import callisto.quotermvp.tools.Events;
 
 public class LocationDialog extends DialogFragment {
     @BindView(R.id.editAddress) EditText editAddress;
 
     private String title;
+    private Bus bus;
     private CustomMapPresenter mapPresenter;
 
     private Unbinder unbinder;
@@ -29,6 +32,7 @@ public class LocationDialog extends DialogFragment {
         LocationDialog fragment = new LocationDialog();
         fragment.title = title;
         fragment.mapPresenter = customMapPresenter;
+        fragment.bus = BusProvider.getInstance();
         return fragment;
     }
 
@@ -72,13 +76,12 @@ public class LocationDialog extends DialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        mapPresenter.onDialogDestroyed();
     }
 
     private void performDialogClosing() {
-        Log.d(getString(R.string.tag_event_fired),
-            getString(R.string.tag_event_geocoding_request));
-        mapPresenter.fireGeocodingRequest(editAddress.getText().toString());
+        bus.post(new Events.GeocodingRequestEvent(editAddress.getText().toString()));
+
+//        mapPresenter.fireGeocodingRequest(editAddress.getText().toString());
         dismiss();
     }
 

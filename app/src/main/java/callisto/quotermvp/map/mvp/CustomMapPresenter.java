@@ -11,7 +11,10 @@ import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 import static callisto.quotermvp.app.MapApplication.getAppContext;
+import static callisto.quotermvp.tools.Constants.Values.DEFAULT_ZOOM;
 import static callisto.quotermvp.tools.Events.AddMarkerEvent;
+import static callisto.quotermvp.tools.Events.GeocodingRequestEvent;
+import static callisto.quotermvp.tools.Events.OnMapReadyEvent;
 
 
 public class CustomMapPresenter {
@@ -27,6 +30,7 @@ public class CustomMapPresenter {
     }
 
     @Subscribe
+    @SuppressWarnings("unused")
     public void onFabAddClickedEvent(AddMarkerEvent event) {
         Log.d(getString(R.string.tag_event_fired),
             getString(R.string.tag_event_map_marker_trigger));
@@ -37,16 +41,33 @@ public class CustomMapPresenter {
         dialog.show(view.getChildFragmentManager(), dialog.getClass().toString());
     }
 
-    public void fireGeocodingRequest(String address) {
+    @Subscribe
+    @SuppressWarnings("unused")
+    public void onMapReadyEvent(OnMapReadyEvent event) {
         Log.d(getString(R.string.tag_event_fired),
-            getString(R.string.tag_event_rx_android_geocoding_observed));
+            getString(R.string.tag_event_map_report_ready));
 
+        view.centerOnStartingPosition(model.getStartingPosition(), DEFAULT_ZOOM.getValue());
+    }
+
+    @Subscribe
+    @SuppressWarnings("unused")
+    public void onGeocodingRequestEvent(GeocodingRequestEvent event) {
+        Log.d(getString(R.string.tag_event_fired),
+            getString(R.string.tag_event_geocoding_request));
+
+        fireGeocodingRequest(event.getAddress());
+    }
+
+    public void fireGeocodingRequest(String address) {
         subscriptions.add(model.getFromLocationName(address).subscribe(new Subscriber<LatLng>() {
             @Override
             public void onCompleted() { }
 
             @Override
-            public void onError(Throwable e) { }
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
 
             @Override
             public void onNext(LatLng latLng) {
@@ -55,7 +76,7 @@ public class CustomMapPresenter {
         }));
     }
 
-    public void onDialogDestroyed() {
+    public void onFragmentDestroyed() {
         subscriptions.unsubscribe();
     }
 

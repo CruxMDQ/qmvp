@@ -1,23 +1,32 @@
 package callisto.quotermvp.map.mvp;
 
 import android.location.Address;
-import android.location.Geocoder;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.List;
 
-import callisto.quotermvp.app.MapApplication;
+import callisto.quotermvp.tools.Geoloc;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+import static callisto.quotermvp.tools.Constants.Positions.START;
 
 public class CustomMapModel {
 
-    public Observable<LatLng> getFromLocationName(final String address) {
+    LatLng getStartingPosition() {
+        LatLng startingPosition = new LatLng(
+            START.getLatitude(),
+            START.getLongitude()
+        );
 
-        // TODO Create a singleton for this; unnecessary to instantiate it every time
-        final Geocoder gc = new Geocoder(MapApplication.getAppContext());
+        return startingPosition;
+    }
+
+    Observable<LatLng> getFromLocationName(final String address) {
 
         Observable<LatLng> myObservable = Observable.create(
             new Observable.OnSubscribe<LatLng>() {
@@ -26,7 +35,7 @@ public class CustomMapModel {
                     List<Address> list;
 
                     try {
-                        list = gc
+                        list = Geoloc.geocoder
                             .getFromLocationName(address, 1);
 
                         Address address = list.get(0);
@@ -41,7 +50,14 @@ public class CustomMapModel {
                     }
                 }
             }
-        );
+        )
+        /** Gobbledygook-to-English:
+         * - subscribeOn tells code to use one among a pool of threads to run the observable;
+         * thing is, you don't get to choose on which thread, but who cares?
+         * - observeOn tells code which THREAD -and yes, this time you get to choose which- should
+         * keep an eye out for the results
+         */
+        .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
         return myObservable;
     }

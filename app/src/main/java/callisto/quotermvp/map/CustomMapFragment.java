@@ -12,21 +12,17 @@ import callisto.quotermvp.map.mvp.CustomMapPresenter;
 import callisto.quotermvp.map.mvp.CustomMapView;
 import callisto.quotermvp.tools.BusProvider;
 
-/**
- * Created by emiliano.desantis on 06/01/2017.
- */
-
 public class CustomMapFragment extends Fragment {
     private CustomMapPresenter presenter;
 
     public CustomMapFragment() {}
 
-    public static CustomMapFragment newInstance() {
-        CustomMapFragment fragment = new CustomMapFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
+//    public static CustomMapFragment newInstance() {
+//        CustomMapFragment fragment = new CustomMapFragment();
+//        Bundle args = new Bundle();
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -50,6 +46,12 @@ public class CustomMapFragment extends Fragment {
     public void onPause() {
         super.onPause();
         BusProvider.unregister(presenter);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onFragmentDestroyed();
     }
 
     private void createPresenter(View view) {
