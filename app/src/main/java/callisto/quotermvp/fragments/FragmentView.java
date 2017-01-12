@@ -21,7 +21,7 @@ public class FragmentView {
     }
 
     @Nullable
-    private Activity getActivity() {
+    protected Activity getActivity() {
         Fragment f = fragmentRef.get();
         return (f == null) ? null : f.getActivity();
     }

@@ -48,6 +48,7 @@ public class CustomMapPresenter {
             getString(R.string.tag_event_map_report_ready));
 
         view.centerOnStartingPosition(model.getStartingPosition(), DEFAULT_ZOOM.getValue());
+        view.populateMap(model.getAllMarkers());
     }
 
     @Subscribe
@@ -59,7 +60,7 @@ public class CustomMapPresenter {
         fireGeocodingRequest(event.getAddress());
     }
 
-    public void fireGeocodingRequest(String address) {
+    private void fireGeocodingRequest(final String address) {
         subscriptions.add(model.getFromLocationName(address).subscribe(new Subscriber<LatLng>() {
             @Override
             public void onCompleted() { }
@@ -72,6 +73,7 @@ public class CustomMapPresenter {
             @Override
             public void onNext(LatLng latLng) {
                 view.addMapMarker(latLng);
+                model.storeInRealm(address, latLng.latitude, latLng.longitude);
             }
         }));
     }
