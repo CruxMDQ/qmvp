@@ -29,7 +29,7 @@ public class CustomMapModel {
         return startingPosition;
     }
 
-    Observable<LatLng> getFromLocationName(final String address) {
+    Observable<LatLng> getFromLocationName(final String address, final String city) {
 
         @SuppressWarnings("UnnecessaryLocalVariable")
         Observable<LatLng> myObservable = Observable.create(
@@ -40,7 +40,7 @@ public class CustomMapModel {
 
                     try {
                         list = Geoloc.geocoder
-                            .getFromLocationName(address, 1);
+                            .getFromLocationName(address + " " + city, 1);
 
                         Address address = list.get(0);
 
@@ -68,18 +68,22 @@ public class CustomMapModel {
         return myObservable;
     }
 
-    void storeInRealm(String address, double lat, double lng) {
+    Estate storeInRealm(String address, String city, double lat, double lng) {
         Estate estate = new Estate();
 
         estate.setId((long) Helper.getInstance().getCount(Estate.class));
 
         estate.setAddress(address);
 
+        estate.setCity(city);
+
         estate.setLatitude(lat);
 
         estate.setLongitude(lng);
 
         Helper.getInstance().save(estate);
+
+        return estate;
     }
 
     List<Estate> getAllMarkers() {

@@ -11,15 +11,7 @@
         android:id="@+id/mapWrapperLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <fragment
-            android:id="@+id/map"
-            class="com.google.android.gms.maps.MapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </callisto.quotermvp.components.MapWrapperLayout>
+        android:orientation="vertical"/>
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/fabMenu"
@@ -30,7 +22,7 @@
         extended:fab_colorNormal="@color/colorPrimary"
         extended:fab_colorPressed="@color/colorPrimaryDark"
         extended:fab_colorRipple="@color/textColorSecondary"
-        extended:layout_anchor="@id/map"
+        extended:layout_anchor="@id/mapWrapperLayout"
         extended:layout_anchorGravity="bottom|right|end">
         <!--android:paddingBottom="117dp"-->
 

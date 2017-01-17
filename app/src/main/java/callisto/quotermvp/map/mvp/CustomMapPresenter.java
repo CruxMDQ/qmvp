@@ -6,31 +6,31 @@ import com.google.android.gms.maps.model.LatLng;
 import com.squareup.otto.Subscribe;
 
 import callisto.quotermvp.R;
+import callisto.quotermvp.base.mvp.BasePresenter;
+import callisto.quotermvp.estatedetails.EstateDetailsFragment;
 import callisto.quotermvp.map.LocationDialog;
+import callisto.quotermvp.realm.model.Estate;
 import rx.Subscriber;
-import rx.subscriptions.CompositeSubscription;
 
-import static callisto.quotermvp.app.MapApplication.getAppContext;
+import static callisto.quotermvp.tools.Constants.Strings.MVP_ESTATE_DETAILS;
 import static callisto.quotermvp.tools.Constants.Values.DEFAULT_ZOOM;
 import static callisto.quotermvp.tools.Events.AddMarkerEvent;
+import static callisto.quotermvp.tools.Events.EstateDetailsQueried;
 import static callisto.quotermvp.tools.Events.GeocodingRequestEvent;
 import static callisto.quotermvp.tools.Events.OnMapReadyEvent;
 
 
-public class CustomMapPresenter {
+public class CustomMapPresenter extends BasePresenter {
     private CustomMapModel model;
     private CustomMapView view;
 
-    private CompositeSubscription subscriptions;
-
     public CustomMapPresenter(CustomMapModel customMapModel, CustomMapView customMapView) {
+        super();
         this.model = customMapModel;
         this.view = customMapView;
-        subscriptions = new CompositeSubscription();
     }
 
     @Subscribe
-    @SuppressWarnings("unused")
     public void onFabAddClickedEvent(AddMarkerEvent event) {
         Log.d(getString(R.string.tag_event_fired),
             getString(R.string.tag_event_map_marker_trigger));
@@ -42,7 +42,6 @@ public class CustomMapPresenter {
     }
 
     @Subscribe
-    @SuppressWarnings("unused")
     public void onMapReadyEvent(OnMapReadyEvent event) {
         Log.d(getString(R.string.tag_event_fired),
             getString(R.string.tag_event_map_report_ready));
@@ -52,16 +51,32 @@ public class CustomMapPresenter {
     }
 
     @Subscribe
-    @SuppressWarnings("unused")
     public void onGeocodingRequestEvent(GeocodingRequestEvent event) {
         Log.d(getString(R.string.tag_event_fired),
             getString(R.string.tag_event_geocoding_request));
 
-        fireGeocodingRequest(event.getAddress());
+        fireGeocodingRequest(event.getAddress(), event.getCity());
     }
 
-    private void fireGeocodingRequest(final String address) {
-        subscriptions.add(model.getFromLocationName(address).subscribe(new Subscriber<LatLng>() {
+    @Subscribe
+    public void onEstateDetailsQueried(EstateDetailsQueried event) {
+        Log.d(getString(R.string.tag_event_fired),
+            getString(R.string.tag_event_estate_details_query));
+
+        android.app.FragmentManager fragmentManager = view.getFragmentManager();
+
+        if (fragmentManager == null) {
+            return;
+        }
+
+        EstateDetailsFragment fragment = EstateDetailsFragment.newInstance(event.getEstate().getId());
+
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
+            .addToBackStack(MVP_ESTATE_DETAILS.getText()).commit();
+    }
+
+    private void fireGeocodingRequest(final String address, final String city) {
+        subscriptions.add(model.getFromLocationName(address, city).subscribe(new Subscriber<LatLng>() {
             @Override
             public void onCompleted() { }
 
@@ -72,17 +87,13 @@ public class CustomMapPresenter {
 
             @Override
             public void onNext(LatLng latLng) {
-                view.addMapMarker(latLng);
-                model.storeInRealm(address, latLng.latitude, latLng.longitude);
+                Estate estate = model.storeInRealm(address, city, latLng.latitude, latLng.longitude);
+                view.addMapMarker(estate);
             }
         }));
     }
 
-    public void onFragmentDestroyed() {
-        subscriptions.unsubscribe();
-    }
-
-    private String getString(int resId) {
-        return getAppContext().getString(resId);
+    public void onViewCreated() {
+        view.onViewCreated();
     }
 }

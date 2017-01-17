@@ -17,7 +17,7 @@ public abstract class OnInfoWindowElemTouchListener implements OnTouchListener {
     private Marker marker;
     private boolean pressed = false;
 
-    public OnInfoWindowElemTouchListener(View view, Drawable bgDrawableNormal, Drawable bgDrawablePressed) {
+    protected OnInfoWindowElemTouchListener(View view, Drawable bgDrawableNormal, Drawable bgDrawablePressed) {
         this.view = view;
         this.bgDrawableNormal = bgDrawableNormal;
         this.bgDrawablePressed = bgDrawablePressed;

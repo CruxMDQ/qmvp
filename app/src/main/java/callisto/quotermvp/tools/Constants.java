@@ -38,4 +38,21 @@ public class Constants {
             return value;
         }
     }
+
+    public enum Strings {
+        ESTATE_KEY("Estate key"),
+        FRAGMENT_MAP("MapFragment"),
+        MVP_MAP("MvpMap"),
+        MVP_ESTATE_DETAILS("MvpEstateDetails");
+
+        private String text;
+
+        Strings(String text) {
+            this.text = text;
+        }
+
+        public String getText() {
+            return text;
+        }
+    }
 }

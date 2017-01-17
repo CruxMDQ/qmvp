@@ -1,27 +1,28 @@
-package callisto.quotermvp.fragments;
+package callisto.quotermvp.base.mvp;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import java.lang.ref.WeakReference;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class FragmentView {
+public class BaseView {
     private final Unbinder unbinder;
     private WeakReference<Fragment> fragmentRef;
 
-    protected FragmentView(Fragment fragment) {
+    protected BaseView(Fragment fragment, View view) {
         fragmentRef = new WeakReference<>(fragment);
-        unbinder = ButterKnife.bind(this, fragment.getView());
+        unbinder = ButterKnife.bind(this, view);
     }
 
     @Nullable
-    protected Activity getActivity() {
+    public Activity getActivity() {
         Fragment f = fragmentRef.get();
         return (f == null) ? null : f.getActivity();
     }
@@ -37,16 +38,15 @@ public class FragmentView {
         return (f == null) ? null : f.getChildFragmentManager();
     }
 
-
     public void unbind() {
         unbinder.unbind();
     }
 
-//    @Nullable
-//    protected FragmentManager getFragmentManager() {
-//        Activity activity = getActivity();
-//        return (activity != null) ? activity.getFragmentManager() : null;
-//    }
+    @Nullable
+    public FragmentManager getFragmentManager() {
+        Activity activity = getActivity();
+        return (activity != null) ? activity.getFragmentManager() : null;
+    }
 
 //    @SuppressWarnings("ConstantConditions")
 //    public void setToolbarTitle(String title) {

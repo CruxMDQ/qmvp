@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.squareup.otto.Bus;
 
@@ -21,6 +22,7 @@ import callisto.quotermvp.tools.Events;
 
 public class LocationDialog extends DialogFragment {
     @BindView(R.id.editAddress) EditText editAddress;
+    @BindView(R.id.txtCity) TextView txtCity;
 
     private String title;
     private Bus bus;
@@ -79,7 +81,7 @@ public class LocationDialog extends DialogFragment {
     }
 
     private void performDialogClosing() {
-        bus.post(new Events.GeocodingRequestEvent(editAddress.getText().toString()));
+        bus.post(new Events.GeocodingRequestEvent(editAddress.getText().toString(), txtCity.getText().toString()));
 
 //        mapPresenter.fireGeocodingRequest(editAddress.getText().toString());
         dismiss();

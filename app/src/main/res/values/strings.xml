@@ -10,4 +10,14 @@
     <string name="tag_event_geocoding_request">Address entered for geocoding request</string>
     <string name="tag_event_map_report_ready">Map reports ready for work</string>
     <string name="tag_event_created_placed_marker">Created and placed new marker</string>
+    <string name="tag_event_estate_details_query">Estate details queried</string>
+    <string name="tag_event_estate_details_update">Estate details updated</string>
+    <string name="label_geographic_information">Geographic information</string>
+    <string name="label_latitude">Latitude:</string>
+    <string name="label_longitude">Longitude</string>
+    <string name="label_street">Street:</string>
+    <string name="label_city">City:</string>
+    <string name="label_name">Name:</string>
+    <string name="label_owner_information">Owner information</string>
+    <string name="filler_default_city">Mar del Plata</string>
 </resources>

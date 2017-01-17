@@ -61,4 +61,10 @@ public class Helper {
             .findAll().where().equalTo("longitude", longitude)
             .findFirst();
     }
+
+    public Estate get(long estateId) {
+        return realm.where(Estate.class)
+            .findAll().where().equalTo("id", estateId)
+            .findFirst();
+    }
 }
