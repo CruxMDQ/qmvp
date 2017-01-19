@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.view.View;
 
@@ -22,7 +23,7 @@ public class BaseView {
     }
 
     @Nullable
-    public Activity getActivity() {
+    protected Activity getActivity() {
         Fragment f = fragmentRef.get();
         return (f == null) ? null : f.getActivity();
     }
@@ -48,6 +49,9 @@ public class BaseView {
         return (activity != null) ? activity.getFragmentManager() : null;
     }
 
+    protected void startActivityForResult(Intent intent, int requestCode) {
+        fragmentRef.get().startActivityForResult(intent, requestCode);
+    }
 //    @SuppressWarnings("ConstantConditions")
 //    public void setToolbarTitle(String title) {
 //        TextView txtToolbarTitle = (TextView) getActivity().findViewById(R.id.toolbar).getRootView()

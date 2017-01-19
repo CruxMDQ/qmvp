@@ -1,7 +1,5 @@
 package callisto.quotermvp.base.mvp;
 
-import android.view.View;
-
 import rx.subscriptions.CompositeSubscription;
 
 import static callisto.quotermvp.app.MapApplication.getAppContext;

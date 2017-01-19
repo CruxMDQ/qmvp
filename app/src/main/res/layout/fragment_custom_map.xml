@@ -24,7 +24,6 @@
         extended:fab_colorRipple="@color/textColorSecondary"
         extended:layout_anchor="@id/mapWrapperLayout"
         extended:layout_anchorGravity="bottom|right|end">
-        <!--android:paddingBottom="117dp"-->
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabAdd"

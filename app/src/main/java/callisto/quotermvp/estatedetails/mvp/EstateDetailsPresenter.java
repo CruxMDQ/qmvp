@@ -1,5 +1,6 @@
 package callisto.quotermvp.estatedetails.mvp;
 
+import android.net.Uri;
 import android.util.Log;
 
 import callisto.quotermvp.R;
@@ -36,5 +37,13 @@ public class EstateDetailsPresenter extends BasePresenter {
             view.getLongitude(),
             view.getOwnerName()
         );
+    }
+
+    public void setContact(Uri data) {
+        Log.d(getString(R.string.tag_result_activity),
+            getString(R.string.tag_result_contact_retrieved));
+
+        model.setUriContact(data);
+        view.setOwnerName(model.retrieveContactName());
     }
 }

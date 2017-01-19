@@ -26,7 +26,8 @@ public class Constants {
     }
 
     public enum Values {
-        DEFAULT_ZOOM(12);
+        DEFAULT_ZOOM(12),
+        RQ_PICK_CONTACT(10001);
 
         private int value;
 
