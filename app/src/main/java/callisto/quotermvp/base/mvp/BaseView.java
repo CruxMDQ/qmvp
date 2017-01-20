@@ -23,7 +23,7 @@ public class BaseView {
     }
 
     @Nullable
-    protected Activity getActivity() {
+    public Activity getActivity() {
         Fragment f = fragmentRef.get();
         return (f == null) ? null : f.getActivity();
     }
@@ -49,7 +49,7 @@ public class BaseView {
         return (activity != null) ? activity.getFragmentManager() : null;
     }
 
-    protected void startActivityForResult(Intent intent, int requestCode) {
+    public void startActivityForResult(Intent intent, int requestCode) {
         fragmentRef.get().startActivityForResult(intent, requestCode);
     }
 //    @SuppressWarnings("ConstantConditions")

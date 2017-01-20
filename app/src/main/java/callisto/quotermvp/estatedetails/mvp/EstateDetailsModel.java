@@ -2,23 +2,34 @@ package callisto.quotermvp.estatedetails.mvp;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
 import android.provider.ContactsContract;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import callisto.quotermvp.app.MapApplication;
 import callisto.quotermvp.realm.Helper;
 import callisto.quotermvp.realm.model.Estate;
 
+import static callisto.quotermvp.tools.Constants.Strings.DATE_FORMAT_ARG;
+
 public class EstateDetailsModel {
     private long estateId;
 
     private Uri uriContact;
+
+    private String currentPhotoPath;
 
     public EstateDetailsModel(long estateId) {
         this.estateId = estateId;
@@ -29,8 +40,6 @@ public class EstateDetailsModel {
     }
 
     void storeInRealm(String address, String city, double lat, double lng, String owner) {
-//        Estate estate = Helper.getInstance().get(estateId);
-
         Estate estate = new Estate();
 
         estate.setId(estateId);
@@ -149,5 +158,28 @@ public class EstateDetailsModel {
 
     void setUriContact(Uri uriContact) {
         this.uriContact = uriContact;
+    }
+
+    Bitmap getBitmapFromCamera(Intent data) {
+        Bundle extras = data.getExtras();
+        return (Bitmap) extras.get("data");
+    }
+
+    File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat(DATE_FORMAT_ARG.getText(), Locale.US).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = MapApplication.getAppContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+            imageFileName,
+            ".jpg",
+            storageDir
+        );
+
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    public String getCurrentPhotoPath() {
+        return currentPhotoPath;
     }
 }

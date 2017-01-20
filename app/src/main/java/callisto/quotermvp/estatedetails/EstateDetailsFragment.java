@@ -15,6 +15,7 @@ import callisto.quotermvp.tools.BusProvider;
 
 import static android.app.Activity.RESULT_OK;
 import static callisto.quotermvp.tools.Constants.Strings.ESTATE_KEY;
+import static callisto.quotermvp.tools.Constants.Values.RQ_CAMERA;
 import static callisto.quotermvp.tools.Constants.Values.RQ_PICK_CONTACT;
 
 public class EstateDetailsFragment extends BaseFragment {
@@ -39,6 +40,11 @@ public class EstateDetailsFragment extends BaseFragment {
         if (requestCode == RQ_PICK_CONTACT.getValue() &&
             resultCode == RESULT_OK) {
             ((EstateDetailsPresenter) presenter).setContact(data.getData());
+        }
+        if (requestCode == RQ_CAMERA.getValue() &&
+            resultCode == RESULT_OK) {
+//            ((EstateDetailsPresenter) presenter).setFrontView(data);
+            ((EstateDetailsPresenter) presenter).setFrontView();
         }
     }
 

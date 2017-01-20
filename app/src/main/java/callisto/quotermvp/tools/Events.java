@@ -44,4 +44,8 @@ public class Events {
             return estate;
         }
     }
+
+    public static class CameraRequestedEvent {
+        public CameraRequestedEvent() { }
+    }
 }

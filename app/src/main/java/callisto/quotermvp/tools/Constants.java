@@ -27,7 +27,8 @@ public class Constants {
 
     public enum Values {
         DEFAULT_ZOOM(12),
-        RQ_PICK_CONTACT(10001);
+        RQ_PICK_CONTACT(10001),
+        RQ_CAMERA(10002);
 
         private int value;
 
@@ -44,7 +45,8 @@ public class Constants {
         ESTATE_KEY("Estate key"),
         FRAGMENT_MAP("MapFragment"),
         MVP_MAP("MvpMap"),
-        MVP_ESTATE_DETAILS("MvpEstateDetails");
+        MVP_ESTATE_DETAILS("MvpEstateDetails"),
+        DATE_FORMAT_ARG("ddMMyyyy_HHmmss");
 
         private String text;
 
