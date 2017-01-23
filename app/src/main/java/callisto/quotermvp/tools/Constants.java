@@ -42,11 +42,12 @@ public class Constants {
     }
 
     public enum Strings {
+        DATE_FORMAT_ARG("ddMMyyyy_HHmmss"),
         ESTATE_KEY("Estate key"),
+        FILE_PROVIDER("callisto.quotermvp.fileprovider"),
         FRAGMENT_MAP("MapFragment"),
-        MVP_MAP("MvpMap"),
         MVP_ESTATE_DETAILS("MvpEstateDetails"),
-        DATE_FORMAT_ARG("ddMMyyyy_HHmmss");
+        MVP_MAP("MvpMap");
 
         private String text;
 

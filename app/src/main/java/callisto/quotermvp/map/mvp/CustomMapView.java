@@ -25,7 +25,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.otto.Bus;
 
-import java.util.HashMap;
 import java.util.List;
 
 import callisto.quotermvp.R;
@@ -62,8 +61,6 @@ public class CustomMapView extends BaseView
     TextView txtOwner;
     Button btnInfoWindow;
     OnInfoWindowElemTouchListener infoButtonListener;
-
-    private HashMap<Marker, Estate> markers;
 
     @SuppressLint("InflateParams")
     public CustomMapView(Fragment fragment, View view, final Bus bus) {
@@ -104,10 +101,10 @@ public class CustomMapView extends BaseView
             getContext().getResources().getDrawable(R.drawable.btn_default_pressed_holo_light)) {
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
-//                markers.get(marker);
                 Estate estate = (Estate) marker.getTag();
 
                 if (estate != null) {
+                    marker.hideInfoWindow();
                     bus.post(new EstateDetailsQueried(estate));
                 }
             }
@@ -184,7 +181,6 @@ public class CustomMapView extends BaseView
         mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
 
         marker.setTag(estate);
-//        markers.put(marker, estate);
 
         return marker;
     }
@@ -194,7 +190,6 @@ public class CustomMapView extends BaseView
     }
 
     void populateMap(List<Estate> data) {
-        markers = new HashMap<>();
         for (Estate estate : data) {
             addMapMarker(estate);
         }

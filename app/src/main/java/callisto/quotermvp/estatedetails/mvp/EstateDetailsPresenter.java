@@ -16,7 +16,9 @@ import callisto.quotermvp.app.MapApplication;
 import callisto.quotermvp.base.mvp.BasePresenter;
 import callisto.quotermvp.realm.model.Estate;
 import callisto.quotermvp.tools.Events.CameraRequestedEvent;
+import callisto.quotermvp.tools.Imagery;
 
+import static callisto.quotermvp.tools.Constants.Strings.FILE_PROVIDER;
 import static callisto.quotermvp.tools.Constants.Values.RQ_CAMERA;
 
 public class EstateDetailsPresenter extends BasePresenter {
@@ -27,18 +29,27 @@ public class EstateDetailsPresenter extends BasePresenter {
         super();
         this.model = estateDetailsModel;
         this.view = estateDetailsView;
-        setupView(model.getEstate());
+        restoreRealmObject(model.getEstate());
     }
 
-    private void setupView(Estate estate) {
+    private void restoreRealmObject(Estate estate) {
         view.setCity(estate.getCity());
         view.setLatitude(estate.getLatitude());
         view.setLongitude(estate.getLongitude());
         view.setStreet(estate.getAddress());
         view.setOwnerName(estate.getOwner());
+        view.setFrontView(Imagery.fileToBitmap(estate.getPicturePath()));
+        model.setCurrentPhotoPath(estate.getPicturePath());
+//        if (estate.getFrontPicture() != null) {
+//            view.setFrontView(Imagery.arrayToBitmap(estate.getFrontPicture()));
+//        }
     }
 
     public void onFragmentPaused() {
+        persistRealmObject();
+    }
+
+    private void persistRealmObject() {
         Log.d(getString(R.string.tag_event_fired),
             getString(R.string.tag_event_estate_details_update));
 
@@ -49,6 +60,9 @@ public class EstateDetailsPresenter extends BasePresenter {
             view.getLongitude(),
             view.getOwnerName()
         );
+//            model.getEstate().getFrontPicture() != null
+//                ? Imagery.fileToArray(model.getPicturePath())
+//                : model.getEstate().getFrontPicture()
     }
 
     public void setContact(Uri data) {
@@ -59,12 +73,8 @@ public class EstateDetailsPresenter extends BasePresenter {
         view.setOwnerName(model.retrieveContactName());
     }
 
-    public void setFrontView(Intent data) {
-        view.setFrontView(model.getBitmapFromCamera(data));
-    }
-
     public void setFrontView() {
-        view.setPic(model.getCurrentPhotoPath());
+        view.setPic(model.getPicturePath());
     }
 
     @Subscribe
@@ -84,7 +94,7 @@ public class EstateDetailsPresenter extends BasePresenter {
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(
                     MapApplication.getAppContext(),
-                    "callisto.quotermvp.fileprovider",
+                    FILE_PROVIDER.getText(),
                     photoFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 view.startActivityForResult(intent, RQ_CAMERA.getValue());

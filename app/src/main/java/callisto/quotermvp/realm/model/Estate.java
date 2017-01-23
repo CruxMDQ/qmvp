@@ -17,6 +17,7 @@ public class Estate extends RealmObject {
     private String address;
     private String city;
     private String owner;
+    private String picturePath;
 
     public Long getId() {
         return id;
@@ -68,5 +69,13 @@ public class Estate extends RealmObject {
 
     public LatLng getPosition() {
         return new LatLng(latitude, longitude);
+    }
+
+    public String getPicturePath() {
+        return picturePath;
+    }
+
+    public void setPicturePath(String picturePath) {
+        this.picturePath = picturePath;
     }
 }

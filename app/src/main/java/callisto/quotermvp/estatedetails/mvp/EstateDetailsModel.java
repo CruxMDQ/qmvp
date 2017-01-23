@@ -2,13 +2,10 @@ package callisto.quotermvp.estatedetails.mvp;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
 import android.provider.ContactsContract;
 
 import java.io.File;
@@ -54,9 +51,18 @@ public class EstateDetailsModel {
 
         estate.setOwner(owner);
 
+        estate.setPicturePath(currentPhotoPath);
+
         Helper.getInstance().save(estate);
     }
 
+    private ContentResolver getContentResolver() {
+        return MapApplication.getAppContext().getContentResolver();
+    }
+
+
+    @SuppressWarnings("unused")
+    // Reserved for future use
     Bitmap retrieveContactPhoto(String contactID) {
 
         Bitmap photo = null;
@@ -84,10 +90,8 @@ public class EstateDetailsModel {
         return photo;
     }
 
-    private ContentResolver getContentResolver() {
-        return MapApplication.getAppContext().getContentResolver();
-    }
-
+    @SuppressWarnings("unused")
+    // Reserved for future use
     String retrieveContactNumber() {
 
         String contactNumber = "";
@@ -160,15 +164,12 @@ public class EstateDetailsModel {
         this.uriContact = uriContact;
     }
 
-    Bitmap getBitmapFromCamera(Intent data) {
-        Bundle extras = data.getExtras();
-        return (Bitmap) extras.get("data");
-    }
-
     File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat(DATE_FORMAT_ARG.getText(), Locale.US).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = MapApplication.getAppContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//        File storageDir = MapApplication.getAppContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);   //.getFilesDir();
+        File storageDir = MapApplication.getAppContext().getFilesDir(); //getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
         File image = File.createTempFile(
             imageFileName,
             ".jpg",
@@ -179,7 +180,11 @@ public class EstateDetailsModel {
         return image;
     }
 
-    public String getCurrentPhotoPath() {
+    String getPicturePath() {
         return currentPhotoPath;
+    }
+
+    void setCurrentPhotoPath(String currentPhotoPath) {
+        this.currentPhotoPath = currentPhotoPath;
     }
 }
