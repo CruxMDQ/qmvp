@@ -45,7 +45,29 @@ public class Events {
         }
     }
 
-    public static class CameraRequestedEvent {
-        public CameraRequestedEvent() { }
+    public static class EstatePictureCaptureEvent {
+        public EstatePictureCaptureEvent() { }
+    }
+
+    public static class RoomsListRequestedEvent {
+        public RoomsListRequestedEvent() { }
+    }
+
+    public static class RoomPictureCaptureEvent {
+        public RoomPictureCaptureEvent() { }
+    }
+
+    public static class RoomCreationRequestedEvent {
+        public RoomCreationRequestedEvent() { }
+    }
+
+    public static class RoomEditionRequestedEvent {
+        long estateId;
+        long roomId;
+
+        public RoomEditionRequestedEvent(long estateId, long roomId) {
+            this.estateId = estateId;
+            this.roomId = roomId;
+        }
     }
 }

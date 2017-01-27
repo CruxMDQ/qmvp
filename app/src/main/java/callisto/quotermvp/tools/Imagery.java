@@ -2,8 +2,19 @@ package callisto.quotermvp.tools;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
+import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import callisto.quotermvp.app.MapApplication;
+
+import static callisto.quotermvp.tools.Constants.Strings.DATE_FORMAT_ARG;
 
 /**
  * Toolbox for image manipulation. If not already, anything here may be used on the future.
@@ -27,5 +38,55 @@ public class Imagery {
 
     public static Bitmap fileToBitmap(String picturePath) {
         return BitmapFactory.decodeFile(picturePath);
+    }
+
+    public static Bitmap getScaledPic(ImageView imageView, String photoPath) {
+        // Get the dimensions of the View
+        int targetW = imageView.getWidth();
+        int targetH = imageView.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(photoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        return BitmapFactory.decodeFile(photoPath, bmOptions);
+    }
+
+    @NonNull
+    public static File getFile() throws IOException {
+        // TODO Find a solution for too many images cluttering up the app dir
+        String timeStamp = new SimpleDateFormat(DATE_FORMAT_ARG.getText(), Locale.US).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+//        File storageDir = MapApplication.getAppContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);   //.getFilesDir();
+        File storageDir = MapApplication.getAppContext().getFilesDir(); //getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        return File.createTempFile(
+            imageFileName,
+            ".jpg",
+            storageDir
+        );
+    }
+
+    @NonNull
+    public static File getFile(Class klass, long id, int index) throws IOException {
+        String imageFileName = klass.getName() + "_" + id + "_" + index;
+        File storageDir = MapApplication.getAppContext().getFilesDir();
+
+        return File.createTempFile(
+            imageFileName,
+            ".jpg",
+            storageDir
+        );
     }
 }

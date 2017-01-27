@@ -2,9 +2,7 @@ package callisto.quotermvp.estatedetails;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import callisto.quotermvp.R;
 import callisto.quotermvp.base.BaseFragment;
@@ -15,7 +13,7 @@ import callisto.quotermvp.tools.BusProvider;
 
 import static android.app.Activity.RESULT_OK;
 import static callisto.quotermvp.tools.Constants.Strings.ESTATE_KEY;
-import static callisto.quotermvp.tools.Constants.Values.RQ_CAMERA;
+import static callisto.quotermvp.tools.Constants.Values.RQ_CAMERA_ESTATE;
 import static callisto.quotermvp.tools.Constants.Values.RQ_PICK_CONTACT;
 
 public class EstateDetailsFragment extends BaseFragment {
@@ -27,13 +25,13 @@ public class EstateDetailsFragment extends BaseFragment {
         return fragment;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(getLayout(), container, false);
-        createPresenter(view);
-        return view;
-    }
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//        View view = inflater.inflate(getLayout(), container, false);
+//        createPresenter(view);
+//        return view;
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -41,7 +39,7 @@ public class EstateDetailsFragment extends BaseFragment {
             resultCode == RESULT_OK) {
             ((EstateDetailsPresenter) presenter).setContact(data.getData());
         }
-        if (requestCode == RQ_CAMERA.getValue() &&
+        if (requestCode == RQ_CAMERA_ESTATE.getValue() &&
             resultCode == RESULT_OK) {
 //            ((EstateDetailsPresenter) presenter).setFrontView(data);
             ((EstateDetailsPresenter) presenter).setFrontView();

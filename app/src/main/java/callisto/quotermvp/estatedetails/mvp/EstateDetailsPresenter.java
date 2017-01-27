@@ -3,23 +3,20 @@ package callisto.quotermvp.estatedetails.mvp;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import com.squareup.otto.Subscribe;
 
-import java.io.File;
-import java.io.IOException;
-
 import callisto.quotermvp.R;
-import callisto.quotermvp.app.MapApplication;
 import callisto.quotermvp.base.mvp.BasePresenter;
 import callisto.quotermvp.realm.model.Estate;
-import callisto.quotermvp.tools.Events.CameraRequestedEvent;
+import callisto.quotermvp.roomlist.RoomListFragment;
+import callisto.quotermvp.tools.Events.EstatePictureCaptureEvent;
 import callisto.quotermvp.tools.Imagery;
 
-import static callisto.quotermvp.tools.Constants.Strings.FILE_PROVIDER;
-import static callisto.quotermvp.tools.Constants.Values.RQ_CAMERA;
+import static callisto.quotermvp.tools.Constants.Strings.MVP_ROOM_LIST;
+import static callisto.quotermvp.tools.Constants.Values.RQ_CAMERA_ESTATE;
+import static callisto.quotermvp.tools.Events.RoomsListRequestedEvent;
 
 public class EstateDetailsPresenter extends BasePresenter {
     private EstateDetailsModel model;
@@ -60,9 +57,6 @@ public class EstateDetailsPresenter extends BasePresenter {
             view.getLongitude(),
             view.getOwnerName()
         );
-//            model.getEstate().getFrontPicture() != null
-//                ? Imagery.fileToArray(model.getPicturePath())
-//                : model.getEstate().getFrontPicture()
     }
 
     public void setContact(Uri data) {
@@ -78,27 +72,27 @@ public class EstateDetailsPresenter extends BasePresenter {
     }
 
     @Subscribe
-    public void onCameraRequestedEvent(CameraRequestedEvent event) {
+    public void onCameraRequestedEvent(EstatePictureCaptureEvent event) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        final int code = RQ_CAMERA_ESTATE.getValue();
 
-        assert view.getActivity() != null;
-        if (intent.resolveActivity(view.getActivity().getPackageManager()) != null) {
-            File photoFile = null;
+        startCameraActivity(view, intent, code, model.createImageFile());
+    }
 
-            try {
-                photoFile = model.createImageFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    @Subscribe
+    public void onRoomsListRequestedEvent(RoomsListRequestedEvent event) {
+        Log.d(getString(R.string.tag_event_fired),
+            getString(R.string.tag_event_rooms_list_query));
 
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(
-                    MapApplication.getAppContext(),
-                    FILE_PROVIDER.getText(),
-                    photoFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                view.startActivityForResult(intent, RQ_CAMERA.getValue());
-            }
+        android.app.FragmentManager fragmentManager = view.getFragmentManager();
+
+        if (fragmentManager == null) {
+            return;
         }
+
+        RoomListFragment fragment = RoomListFragment.newInstance(model.getEstate().getId());
+
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
+            .addToBackStack(MVP_ROOM_LIST.getText()).commit();
     }
 }

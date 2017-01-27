@@ -28,7 +28,8 @@ public class Constants {
     public enum Values {
         DEFAULT_ZOOM(12),
         RQ_PICK_CONTACT(10001),
-        RQ_CAMERA(10002);
+        RQ_CAMERA_ESTATE(10002),
+        RQ_CAMERA_ROOM(10003);
 
         private int value;
 
@@ -44,10 +45,18 @@ public class Constants {
     public enum Strings {
         DATE_FORMAT_ARG("ddMMyyyy_HHmmss"),
         ESTATE_KEY("Estate key"),
+        ROOM_KEY("Room key"),
+        FIELD_ID("id"),
+        FIELD_LATITUDE("latitude"),
+        FIELD_LONGITUDE("longitude"),
         FILE_PROVIDER("callisto.quotermvp.fileprovider"),
+        FLAG_MODE("Mode"),
         FRAGMENT_MAP("MapFragment"),
         MVP_ESTATE_DETAILS("MvpEstateDetails"),
-        MVP_MAP("MvpMap");
+        MVP_MAP("MvpMap"),
+        MVP_ROOM_CREATE("MvpRoomCreate"),
+        MVP_ROOM_LIST("MvpRoomList");
+
 
         private String text;
 

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardRoomView"
+            style="@style/style_card_view"
+            app:cardCornerRadius="@dimen/spacing_half">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtRoomView"
+                    style="@style/style_text_card_title"
+                    android:text="@string/title_room_view"/>
+
+                <ImageView
+                    android:id="@+id/imgRoom"
+                    android:layout_width="240dp"
+                    android:layout_height="180dp"
+                    android:layout_margin="@dimen/spacing_normal"
+                    android:contentDescription="@string/desc_frontal_view"
+                    android:src="@android:drawable/ic_menu_camera"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardDetails"
+            style="@style/style_card_view"
+            app:cardCornerRadius="@dimen/spacing_half">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/titleDetails"
+                    style="@style/style_text_card_title"
+                    android:text="@string/title_details"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_half"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="@dimen/width_field_label"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_half"
+                        android:text="@string/label_surface"/>
+
+                    <EditText
+                        android:id="@+id/editSurface"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/spacing_half"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:inputType="numberDecimal"
+                        android:text="0"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_half"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="@dimen/width_field_label"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_half"
+                        android:text="@string/label_comments"/>
+
+                    <EditText
+                        android:id="@+id/editComments"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/spacing_half"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:inputType="textAutoCorrect"/>
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+</ScrollView>

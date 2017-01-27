@@ -34,6 +34,18 @@
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
+        android:id="@+id/cardRooms"
+        style="@style/style_card_view"
+        app:cardCornerRadius="@dimen/spacing_half">
+
+        <TextView
+            android:id="@+id/txtTitleRooms"
+            style="@style/style_text_card_title"
+            android:text="@string/notice_no_rooms"/>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
         android:id="@+id/cardLocation"
         style="@style/style_card_view"
         app:cardCornerRadius="@dimen/spacing_half">

@@ -2,6 +2,7 @@ package callisto.quotermvp.realm.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
@@ -18,6 +19,8 @@ public class Estate extends RealmObject {
     private String city;
     private String owner;
     private String picturePath;
+
+    private RealmList<Room> rooms = new RealmList<>();
 
     public Long getId() {
         return id;
@@ -77,5 +80,9 @@ public class Estate extends RealmObject {
 
     public void setPicturePath(String picturePath) {
         this.picturePath = picturePath;
+    }
+
+    public RealmList<Room> getRooms() {
+        return rooms;
     }
 }

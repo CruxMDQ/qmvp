@@ -24,4 +24,11 @@
     <string name="filler_default_city">Mar del Plata</string>
     <string name="desc_frontal_view">Frontal view</string>
     <string name="title_frontal_view">Frontal view</string>
+    <string name="notice_no_rooms">No rooms created. Push the button to add one.</string>
+    <string name="tag_event_rooms_list_query">Rooms list queried</string>
+    <string name="hint_no_rooms">No rooms have been yet created.\n\nTap the button to add one.</string>
+    <string name="title_room_view">Room view</string>
+    <string name="label_surface">Surface</string>
+    <string name="title_details">Details</string>
+    <string name="label_comments">Comments</string>
 </resources>

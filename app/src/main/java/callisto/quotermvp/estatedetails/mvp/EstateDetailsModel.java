@@ -11,15 +11,11 @@ import android.provider.ContactsContract;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import callisto.quotermvp.app.MapApplication;
 import callisto.quotermvp.realm.Helper;
 import callisto.quotermvp.realm.model.Estate;
-
-import static callisto.quotermvp.tools.Constants.Strings.DATE_FORMAT_ARG;
+import callisto.quotermvp.tools.Imagery;
 
 public class EstateDetailsModel {
     private long estateId;
@@ -33,27 +29,27 @@ public class EstateDetailsModel {
     }
 
     public Estate getEstate() {
-        return Helper.getInstance().get(estateId);
+        return Helper.getInstance().get(Estate.class, estateId);
     }
 
     void storeInRealm(String address, String city, double lat, double lng, String owner) {
         Estate estate = new Estate();
+        final Helper helper = Helper.getInstance();
 
         estate.setId(estateId);
-
         estate.setAddress(address);
-
         estate.setCity(city);
-
         estate.setLatitude(lat);
-
         estate.setLongitude(lng);
-
         estate.setOwner(owner);
-
         estate.setPicturePath(currentPhotoPath);
 
-        Helper.getInstance().save(estate);
+        if (helper.get(Estate.class, estateId) != null) {
+            helper.updateEstate(estate);
+        } else {
+            helper.save(estate);
+        }
+//        helper.save(estate);
     }
 
     private ContentResolver getContentResolver() {
@@ -164,19 +160,15 @@ public class EstateDetailsModel {
         this.uriContact = uriContact;
     }
 
-    File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat(DATE_FORMAT_ARG.getText(), Locale.US).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-//        File storageDir = MapApplication.getAppContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);   //.getFilesDir();
-        File storageDir = MapApplication.getAppContext().getFilesDir(); //getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+    File createImageFile() {
+        File image = null;
+        try {
+            image = Imagery.getFile(Estate.class, estateId, 0);
+            currentPhotoPath = image.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        File image = File.createTempFile(
-            imageFileName,
-            ".jpg",
-            storageDir
-        );
-
-        currentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
