@@ -1,20 +1,33 @@
 package callisto.quotermvp.roomdetails.mvp;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-import callisto.quotermvp.realm.Helper;
+import callisto.quotermvp.firebase.model.Chamber;
 import callisto.quotermvp.realm.model.Room;
+import callisto.quotermvp.tools.BusProvider;
+import callisto.quotermvp.tools.Events;
 import callisto.quotermvp.tools.Imagery;
+
+import static callisto.quotermvp.tools.Constants.Strings.DB_ESTATES;
+import static callisto.quotermvp.tools.Constants.Strings.DB_ROOMS;
 
 public class RoomDetailsModel {
 
-    private long roomId;
-    private long estateId;
+    private String roomId;
+    private String estateId;
 
     private String currentPhotoPath;
 
-    public RoomDetailsModel(long roomId, long estateId) {
+    public RoomDetailsModel(String roomId, String estateId) {
         this.roomId = roomId;
         this.estateId = estateId;
     }
@@ -31,9 +44,39 @@ public class RoomDetailsModel {
         return image;
     }
 
-    public Room getRoom() {
-        return Helper.getInstance().get(Room.class, roomId);
+    void queryFirebaseForRoom() {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference(DB_ESTATES.getText())
+            .child(estateId)
+            .child(DB_ROOMS.getText())
+            .child(roomId);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> map;
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    // noinspection unchecked
+                    map = (HashMap<String, Object>) postSnapshot.getValue();
+
+                    Chamber chamber = new Chamber(
+                        postSnapshot.getKey(),
+                        (double) map.get("surface"),
+                        map.get("name").toString()
+                    );
+
+                    if (chamber.getIdentifier().equalsIgnoreCase(roomId)) {
+                        BusProvider.getInstance().post(new Events.RoomRetrievedFromFirebaseEvent(chamber));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
     }
+
 
     String getPicturePath() {
         return currentPhotoPath;
@@ -43,23 +86,42 @@ public class RoomDetailsModel {
         currentPhotoPath = picturePath;
     }
 
-    void storeInRealm(String surface, String comments) {
-        final Helper helper = Helper.getInstance();
+    String storeInFirebase(double surface, String comments) {
+        Chamber chamber = new Chamber(surface, comments);
 
-        Room room = new Room();
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+            .getReference(DB_ESTATES.getText())
+            .child(estateId)
+            .child(DB_ROOMS.getText())
+            .child(roomId);
 
-        room.setId(roomId);
+        reference.setValue(chamber);
 
-        room.setSurface(Double.valueOf(surface));
-
-        room.setObservations(comments);
-
-        room.setPicturePath(currentPhotoPath);
-
-        if (helper.get(Room.class, roomId) != null) {
-            helper.updateRoom(estateId, room);
-        } else {
-            helper.addRoom(estateId, room);
-        }
+        return reference.getKey();
     }
+
+//    public Room getRoom() {
+//        return Helper.getInstance().get(Room.class, roomId);
+//    }
+
+//    void storeInRealm(String surface, String comments) {
+//        final Helper helper = Helper.getInstance();
+//
+//        Room room = new Room();
+//
+//        room.setId(roomId);
+//
+//        room.setSurface(Double.valueOf(surface));
+//
+//        room.setObservations(comments);
+//
+//        room.setPicturePath(currentPhotoPath);
+//
+//        if (helper.get(Room.class, roomId) != null) {
+//            helper.updateRoom(estateId, room);
+//        } else {
+//            helper.addRoom(estateId, room);
+//        }
+//    }
+
 }

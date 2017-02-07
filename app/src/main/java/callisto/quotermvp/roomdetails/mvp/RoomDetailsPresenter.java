@@ -6,10 +6,11 @@ import android.provider.MediaStore;
 import com.squareup.otto.Subscribe;
 
 import callisto.quotermvp.base.mvp.BasePresenter;
-import callisto.quotermvp.realm.model.Room;
+import callisto.quotermvp.firebase.model.Chamber;
 
 import static callisto.quotermvp.tools.Constants.Values.RQ_CAMERA_ROOM;
 import static callisto.quotermvp.tools.Events.RoomPictureCaptureEvent;
+import static callisto.quotermvp.tools.Events.RoomRetrievedFromFirebaseEvent;
 
 public class RoomDetailsPresenter extends BasePresenter {
     private final RoomDetailsModel model;
@@ -18,15 +19,14 @@ public class RoomDetailsPresenter extends BasePresenter {
     public RoomDetailsPresenter(RoomDetailsModel model, RoomDetailsView view) {
         this.model = model;
         this.view = view;
-        restoreRealmObject(model.getRoom());
+        model.queryFirebaseForRoom();
+//        restoreRealmObject(model.getRoom());
     }
 
-    private void restoreRealmObject(Room room) {
-        if (room != null) {
-            view.setPic(room.getPicturePath());
-            view.setComments(room.getObservations());
-            view.setSurface(room.getSurface());
-            model.setPicturePath(room.getPicturePath());
+    private void restoreFirebaseObject(Chamber chamber) {
+        if (chamber != null) {
+            view.setComments(chamber.getName());
+            view.setSurface(chamber.getSurface());
         }
     }
 
@@ -35,7 +35,7 @@ public class RoomDetailsPresenter extends BasePresenter {
     }
 
     private void persistRealmObject() {
-        model.storeInRealm(view.getSurface(), view.getComments());
+        model.storeInFirebase(Double.valueOf(view.getSurface()), view.getComments());
     }
 
     @Subscribe
@@ -46,7 +46,21 @@ public class RoomDetailsPresenter extends BasePresenter {
         startCameraActivity(view, intent, code, model.createImageFile());
     }
 
+    @Subscribe
+    public void onRoomRetrievedFromFirebase(RoomRetrievedFromFirebaseEvent event) {
+        restoreFirebaseObject(event.room);
+    }
+
     public void setFrontView() {
         view.setPic(model.getPicturePath());
     }
+
+//    private void restoreRealmObject(Room room) {
+//        if (room != null) {
+//            view.setPic(room.getPicturePath());
+//            view.setComments(room.getObservations());
+//            view.setSurface(room.getSurface());
+//            model.setPicturePath(room.getPicturePath());
+//        }
+//    }
 }

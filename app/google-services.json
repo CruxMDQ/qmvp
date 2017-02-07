@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "704744444731",
+    "firebase_url": "https://quotermvp.firebaseio.com",
+    "project_id": "quotermvp",
+    "storage_bucket": "quotermvp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:704744444731:android:016807204ac9ae92",
+        "android_client_info": {
+          "package_name": "callisto.quotermvp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "704744444731-dsrp9dqf3bh4o44e7raim9l9lij6pq0k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "callisto.quotermvp",
+            "certificate_hash": "25F9787E279BE79D9C0E1501D80CB808587C4B11"
+          }
+        },
+        {
+          "client_id": "704744444731-mfodstuq4t8lfvfo1onovu5jpjv72k8j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF-LwOEUr13pP0-jIu7mMFdilRMaawAYE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "704744444731-mfodstuq4t8lfvfo1onovu5jpjv72k8j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

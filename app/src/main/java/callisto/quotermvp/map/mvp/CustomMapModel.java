@@ -1,14 +1,26 @@
 package callisto.quotermvp.map.mvp;
 
 import android.location.Address;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import callisto.quotermvp.realm.Helper;
-import callisto.quotermvp.realm.model.Estate;
+import callisto.quotermvp.firebase.model.Chamber;
+import callisto.quotermvp.firebase.model.RealEstate;
+import callisto.quotermvp.tools.BusProvider;
+import callisto.quotermvp.tools.Events;
 import callisto.quotermvp.tools.Geoloc;
 import rx.Observable;
 import rx.Subscriber;
@@ -16,6 +28,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static callisto.quotermvp.tools.Constants.Positions.START;
+import static callisto.quotermvp.tools.Constants.Strings.DB_ESTATES;
+import static callisto.quotermvp.tools.Constants.Strings.FIELD_ADDRESS;
+import static callisto.quotermvp.tools.Constants.Strings.FIELD_CITY;
+import static callisto.quotermvp.tools.Constants.Strings.FIELD_LATITUDE;
+import static callisto.quotermvp.tools.Constants.Strings.FIELD_LONGITUDE;
 
 public class CustomMapModel {
 
@@ -68,25 +85,97 @@ public class CustomMapModel {
         return myObservable;
     }
 
-    Estate storeInRealm(String address, String city, double lat, double lng) {
-        Estate estate = new Estate();
+    RealEstate storeInFirebase(String address, String city, double lat, double lng) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        estate.setId((long) Helper.getInstance().getCount(Estate.class));
+        RealEstate.Builder builder =
+            new RealEstate.Builder()
+                .setAddress(address)
+                .setCity(city)
+                .setLatitude(lat)
+                .setLongitude(lng);
 
-        estate.setAddress(address);
+        final RealEstate realEstate = builder.build();
 
-        estate.setCity(city);
+        // TODO Before uploading, introduce check to validate that it does not exist
 
-        estate.setLatitude(lat);
+        DatabaseReference reference = add(database, realEstate);
 
-        estate.setLongitude(lng);
+        realEstate.setIdentifier(reference.getKey());
 
-        Helper.getInstance().save(estate);
-
-        return estate;
+        return realEstate;
     }
 
-    List<Estate> getAllMarkers() {
-        return Helper.getInstance().getList(Estate.class);
+    @NonNull
+    private DatabaseReference add(FirebaseDatabase database, RealEstate realEstate) {
+        DatabaseReference reference = database.getReference(DB_ESTATES.getText());
+
+        reference.push().setValue(realEstate);
+
+        return reference;
     }
+
+    void requestMarkersFromFirebase() {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference().child(DB_ESTATES.getText());
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> map;
+
+                List<RealEstate> result = new ArrayList<>();
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    //noinspection unchecked
+                    map = (HashMap<String, Object>) postSnapshot.getValue();
+
+                    RealEstate.Builder builder = new RealEstate.Builder();
+
+                    builder.setIdentifier(postSnapshot.getKey());
+
+                    builder.setAddress(map.get(FIELD_ADDRESS.getText()).toString());
+                    builder.setCity(map.get(FIELD_CITY.getText()).toString());
+                    builder.setLatitude((double) map.get(FIELD_LATITUDE.getText()));
+                    builder.setLongitude((double) map.get(FIELD_LONGITUDE.getText()));
+
+                    try {
+                        Chamber room = new Chamber((double) map.get("surface"),
+                            map.get("name").toString());
+                        builder.addRoom(room);
+                    } catch (NullPointerException NPE) {
+                        Log.d("Caught null", "Estate has no rooms");
+                    }
+                    result.add(builder.build());
+                }
+
+                BusProvider.getInstance().post(new Events.EstatesRetrievedFromFirebaseEvent(result));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+    }
+
+//    Estate storeInRealm(String address, String city, double lat, double lng) {
+//        Estate estate = new Estate();
+//
+//        estate.setId((long) Helper.getInstance().getCount(Estate.class));
+//
+//        estate.setAddress(address);
+//
+//        estate.setCity(city);
+//
+//        estate.setLatitude(lat);
+//
+//        estate.setLongitude(lng);
+//
+//        Helper.getInstance().save(estate);
+//
+//        return estate;
+//    }
+//
+//    List<Estate> getAllMarkersFromRealm() {
+//        return Helper.getInstance().getList(Estate.class);
+//    }
 }

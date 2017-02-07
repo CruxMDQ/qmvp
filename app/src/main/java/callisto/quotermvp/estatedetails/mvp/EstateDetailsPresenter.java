@@ -9,13 +9,13 @@ import com.squareup.otto.Subscribe;
 
 import callisto.quotermvp.R;
 import callisto.quotermvp.base.mvp.BasePresenter;
-import callisto.quotermvp.realm.model.Estate;
+import callisto.quotermvp.firebase.model.RealEstate;
 import callisto.quotermvp.roomlist.RoomListFragment;
 import callisto.quotermvp.tools.Events.EstatePictureCaptureEvent;
-import callisto.quotermvp.tools.Imagery;
 
 import static callisto.quotermvp.tools.Constants.Strings.MVP_ROOM_LIST;
 import static callisto.quotermvp.tools.Constants.Values.RQ_CAMERA_ESTATE;
+import static callisto.quotermvp.tools.Events.QueriedEstateRetrievedEvent;
 import static callisto.quotermvp.tools.Events.RoomsListRequestedEvent;
 
 public class EstateDetailsPresenter extends BasePresenter {
@@ -26,21 +26,34 @@ public class EstateDetailsPresenter extends BasePresenter {
         super();
         this.model = estateDetailsModel;
         this.view = estateDetailsView;
-        restoreRealmObject(model.getEstate());
+//        restoreObject(model.getEstate());
+        model.queryFirebaseForRealEstate();
     }
 
-    private void restoreRealmObject(Estate estate) {
+//    private void restoreObject(Estate estate) {
+//        view.setCity(estate.getCity());
+//        view.setLatitude(estate.getLatitude());
+//        view.setLongitude(estate.getLongitude());
+//        view.setStreet(estate.getAddress());
+//        view.setOwnerName(estate.getOwner());
+//        view.setFrontView(Imagery.fileToBitmap(estate.getPicturePath()));
+//        model.setCurrentPhotoPath(estate.getPicturePath());
+////        if (estate.getFrontPicture() != null) {
+////            view.setFrontView(Imagery.arrayToBitmap(estate.getFrontPicture()));
+////        }
+//    }
+
+    private void restoreObject(RealEstate estate) {
         view.setCity(estate.getCity());
         view.setLatitude(estate.getLatitude());
         view.setLongitude(estate.getLongitude());
         view.setStreet(estate.getAddress());
         view.setOwnerName(estate.getOwner());
-        view.setFrontView(Imagery.fileToBitmap(estate.getPicturePath()));
-        model.setCurrentPhotoPath(estate.getPicturePath());
-//        if (estate.getFrontPicture() != null) {
-//            view.setFrontView(Imagery.arrayToBitmap(estate.getFrontPicture()));
-//        }
+//        view.setFrontView(Imagery.fileToBitmap(estate.getPicturePath()));
+//        model.setCurrentPhotoPath(estate.getPicturePath());
+
     }
+
 
     public void onFragmentPaused() {
         persistRealmObject();
@@ -50,7 +63,15 @@ public class EstateDetailsPresenter extends BasePresenter {
         Log.d(getString(R.string.tag_event_fired),
             getString(R.string.tag_event_estate_details_update));
 
-        model.storeInRealm(
+//        model.storeInRealm(
+//            view.getStreet(),
+//            view.getCity(),
+//            view.getLatitude(),
+//            view.getLongitude(),
+//            view.getOwnerName()
+//        );
+
+        model.storeInFirebase(
             view.getStreet(),
             view.getCity(),
             view.getLatitude(),
@@ -90,9 +111,14 @@ public class EstateDetailsPresenter extends BasePresenter {
             return;
         }
 
-        RoomListFragment fragment = RoomListFragment.newInstance(model.getEstate().getId());
+        RoomListFragment fragment = RoomListFragment.newInstance(model.getRealEstate().getIdentifier());
 
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment)
             .addToBackStack(MVP_ROOM_LIST.getText()).commit();
+    }
+
+    @Subscribe
+    public void onQueriedEstateRetrievedEvent(QueriedEstateRetrievedEvent event) {
+        restoreObject(event.estate);
     }
 }

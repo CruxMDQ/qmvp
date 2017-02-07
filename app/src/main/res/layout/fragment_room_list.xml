@@ -11,13 +11,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/rvRooms"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            extended:rrvEmptyLayoutId="@layout/rv_rooms_list_empty"
-            extended:rrvIsRefreshable="false"
-            extended:rrvLayoutType="LinearLayout"/>
+            android:layout_height="match_parent"/>
+        <!--<co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView-->
+            <!--android:id="@+id/rvRooms"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--extended:rrvEmptyLayoutId="@layout/rv_rooms_list_empty"-->
+            <!--extended:rrvIsRefreshable="false"-->
+            <!--extended:rrvLayoutType="LinearLayout"/>-->
     </LinearLayout>
 
     <com.github.clans.fab.FloatingActionButton

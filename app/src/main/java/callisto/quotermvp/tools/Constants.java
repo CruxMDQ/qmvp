@@ -44,19 +44,27 @@ public class Constants {
 
     public enum Strings {
         DATE_FORMAT_ARG("ddMMyyyy_HHmmss"),
-        ESTATE_KEY("Estate key"),
-        ROOM_KEY("Room key"),
+        DB_ESTATES("Estates"),
+        DB_ROOMS("Rooms"),
+        ESTATE_KEY("RealEstate key"),
+        ROOM_KEY("Chamber key"),
         FIELD_ID("id"),
+        FIELD_ADDRESS("address"),
+        FIELD_CITY("city"),
+        FIELD_IDENTIFIER("identifier"),
         FIELD_LATITUDE("latitude"),
         FIELD_LONGITUDE("longitude"),
+        FIELD_OWNER("owner"),
+        FIELD_PICTURE("picture"),
         FILE_PROVIDER("callisto.quotermvp.fileprovider"),
         FLAG_MODE("Mode"),
+        FLAG_MODE_ADDITION("Addition"),
+        FLAG_MODE_EDITION("Edition"),
         FRAGMENT_MAP("MapFragment"),
         MVP_ESTATE_DETAILS("MvpEstateDetails"),
         MVP_MAP("MvpMap"),
         MVP_ROOM_CREATE("MvpRoomCreate"),
         MVP_ROOM_LIST("MvpRoomList");
-
 
         private String text;
 

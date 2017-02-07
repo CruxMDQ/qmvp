@@ -8,13 +8,8 @@ import android.widget.ImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import callisto.quotermvp.app.MapApplication;
-
-import static callisto.quotermvp.tools.Constants.Strings.DATE_FORMAT_ARG;
 
 /**
  * Toolbox for image manipulation. If not already, anything here may be used on the future.
@@ -64,12 +59,10 @@ public class Imagery {
     }
 
     @NonNull
-    public static File getFile() throws IOException {
-        // TODO Find a solution for too many images cluttering up the app dir
-        String timeStamp = new SimpleDateFormat(DATE_FORMAT_ARG.getText(), Locale.US).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-//        File storageDir = MapApplication.getAppContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);   //.getFilesDir();
-        File storageDir = MapApplication.getAppContext().getFilesDir(); //getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+    public static File getFile(Class klass, long id, int index) throws IOException {
+        // TODO Find a solution for orphaned images cluttering up the app dir
+        String imageFileName = klass.getName() + "_" + id + "_" + index;
+        File storageDir = MapApplication.getAppContext().getFilesDir();
 
         return File.createTempFile(
             imageFileName,
@@ -79,7 +72,7 @@ public class Imagery {
     }
 
     @NonNull
-    public static File getFile(Class klass, long id, int index) throws IOException {
+    public static File getFile(Class klass, String id, int index) throws IOException {
         String imageFileName = klass.getName() + "_" + id + "_" + index;
         File storageDir = MapApplication.getAppContext().getFilesDir();
 

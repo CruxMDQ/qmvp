@@ -44,6 +44,8 @@ dependencies {
     compile "io.reactivex:rxandroid:$rxAndroidVersion"
     compile "io.reactivex:rxjava:$rxJavaVersion"
     compile "com.squareup.picasso:picasso:$picassoVersion"
+    compile "com.google.firebase:firebase-database:$firebaseVersion"
+    compile "com.firebaseui:firebase-ui-database:$firebaseUiVersion"
 
     compile "com.google.android.gms:play-services:$playServicesVersion"
     compile "com.google.android.gms:play-services-location:$playServicesVersion"
@@ -58,7 +60,7 @@ dependencies {
     androidTestCompile "com.android.support.test:rules:$rulesVersion"
 
     androidTestCompile "com.android.support.test.espresso:espresso-core:$espressoVersion"
-    androidTestCompile ("com.android.support.test.espresso:espresso-contrib:$espressoVersion") {
+    androidTestCompile("com.android.support.test.espresso:espresso-contrib:$espressoVersion") {
         exclude module: 'support-annotations'
         exclude module: 'support-v4'
         exclude module: 'support-v13'
@@ -70,3 +72,4 @@ dependencies {
 configurations.all {
     resolutionStrategy.force "com.android.support:support-annotations:$supportLibraryVersion"
 }
+apply plugin: 'com.google.gms.google-services'

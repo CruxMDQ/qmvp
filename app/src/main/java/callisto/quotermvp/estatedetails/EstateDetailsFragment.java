@@ -13,6 +13,7 @@ import callisto.quotermvp.tools.BusProvider;
 
 import static android.app.Activity.RESULT_OK;
 import static callisto.quotermvp.tools.Constants.Strings.ESTATE_KEY;
+import static callisto.quotermvp.tools.Constants.Strings.FIELD_IDENTIFIER;
 import static callisto.quotermvp.tools.Constants.Values.RQ_CAMERA_ESTATE;
 import static callisto.quotermvp.tools.Constants.Values.RQ_PICK_CONTACT;
 
@@ -25,6 +26,13 @@ public class EstateDetailsFragment extends BaseFragment {
         return fragment;
     }
 
+    public static EstateDetailsFragment newInstance(String identifier) {
+        EstateDetailsFragment fragment = new EstateDetailsFragment();
+        Bundle args = new Bundle();
+        args.putString(FIELD_IDENTIFIER.getText(), identifier);
+        fragment.setArguments(args);
+        return fragment;
+    }
 //    @Override
 //    public View onCreateView(LayoutInflater inflater, ViewGroup container,
 //                             Bundle savedInstanceState) {
@@ -54,9 +62,10 @@ public class EstateDetailsFragment extends BaseFragment {
     @Override
     protected void createPresenter(View view) {
         Bundle args = this.getArguments();
-        long estateId = args.getLong(ESTATE_KEY.getText());
+//        long estateId = args.getLong(ESTATE_KEY.getText());
+        String identifier = args.getString(FIELD_IDENTIFIER.getText());
 
-        presenter = new EstateDetailsPresenter(new EstateDetailsModel(estateId),
+        presenter = new EstateDetailsPresenter(new EstateDetailsModel(identifier),
             new EstateDetailsView(this, view, BusProvider.getInstance()));
     }
 }

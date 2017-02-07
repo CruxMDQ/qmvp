@@ -31,14 +31,15 @@ import callisto.quotermvp.R;
 import callisto.quotermvp.base.mvp.BaseView;
 import callisto.quotermvp.components.MapWrapperLayout;
 import callisto.quotermvp.components.OnInfoWindowElemTouchListener;
+import callisto.quotermvp.firebase.model.RealEstate;
 import callisto.quotermvp.realm.Helper;
 import callisto.quotermvp.realm.model.Estate;
 
 import static callisto.quotermvp.tools.Constants.Strings.FRAGMENT_MAP;
 import static callisto.quotermvp.tools.Constants.Values.DEFAULT_ZOOM;
 import static callisto.quotermvp.tools.Events.AddMarkerEvent;
-import static callisto.quotermvp.tools.Events.EstateDetailsQueried;
 import static callisto.quotermvp.tools.Events.OnMapReadyEvent;
+import static callisto.quotermvp.tools.Events.RealEstateDetailsQueried;
 
 public class CustomMapView extends BaseView
     implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -101,11 +102,17 @@ public class CustomMapView extends BaseView
             getContext().getResources().getDrawable(R.drawable.btn_default_pressed_holo_light)) {
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
-                Estate estate = (Estate) marker.getTag();
+//                Estate estate = (Estate) marker.getTag();
+//
+//                if (estate != null) {
+//                    marker.hideInfoWindow();
+//                    bus.post(new EstateDetailsQueried(estate));
+//                }
+                RealEstate estate = (RealEstate) marker.getTag();
 
                 if (estate != null) {
                     marker.hideInfoWindow();
-                    bus.post(new EstateDetailsQueried(estate));
+                    bus.post(new RealEstateDetailsQueried(estate));
                 }
             }
         };
@@ -167,12 +174,10 @@ public class CustomMapView extends BaseView
         bus.post(new OnMapReadyEvent());
     }
 
-    Marker addMapMarker(Estate estate) {
+    Marker addMapMarker(Object estate, LatLng position) {
         //noinspection ConstantConditions
         Log.d(getContext().getString(R.string.tag_event_fired),
             getContext().getString(R.string.tag_event_created_placed_marker));
-
-        LatLng position = estate.getPosition();
 
         MarkerOptions markerOptions = new MarkerOptions().position(position).title("Location");
 
@@ -189,9 +194,15 @@ public class CustomMapView extends BaseView
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startingPosition, defaultZoom));
     }
 
+    void loadMarkers(List<RealEstate> data) {
+        for (RealEstate estate : data) {
+            addMapMarker(estate, estate.getPosition());
+        }
+    }
+
     void populateMap(List<Estate> data) {
         for (Estate estate : data) {
-            addMapMarker(estate);
+            addMapMarker(estate, estate.getPosition());
         }
     }
 

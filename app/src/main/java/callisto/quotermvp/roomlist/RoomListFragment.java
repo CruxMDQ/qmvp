@@ -21,6 +21,14 @@ public class RoomListFragment extends BaseFragment {
         return fragment;
     }
 
+    public static RoomListFragment newInstance(String identifier) {
+        RoomListFragment fragment = new RoomListFragment();
+        Bundle args = new Bundle();
+        args.putString(ESTATE_KEY.getText(), identifier);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     protected int getLayout() {
         return R.layout.fragment_room_list;
@@ -29,9 +37,11 @@ public class RoomListFragment extends BaseFragment {
     @Override
     protected void createPresenter(View view) {
         Bundle args = this.getArguments();
-        long estateId = args.getLong(ESTATE_KEY.getText());
+        String estateId = args.getString (ESTATE_KEY.getText());
 
-        presenter = new RoomListPresenter(new RoomListModel(estateId),
-            new RoomListView(this, view, BusProvider.getInstance(), estateId));
+        final RoomListModel model = new RoomListModel(estateId);
+        presenter = new RoomListPresenter(model,
+            new RoomListView(this, view, BusProvider.getInstance(), model.getDatabaseReference()));
     }
+
 }

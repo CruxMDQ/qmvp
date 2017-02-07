@@ -7,55 +7,150 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import callisto.quotermvp.app.MapApplication;
+import callisto.quotermvp.firebase.model.Chamber;
+import callisto.quotermvp.firebase.model.RealEstate;
 import callisto.quotermvp.realm.Helper;
 import callisto.quotermvp.realm.model.Estate;
+import callisto.quotermvp.tools.BusProvider;
+import callisto.quotermvp.tools.Events;
 import callisto.quotermvp.tools.Imagery;
 
+import static callisto.quotermvp.tools.Constants.Strings.DB_ESTATES;
+import static callisto.quotermvp.tools.Constants.Strings.FIELD_ADDRESS;
+import static callisto.quotermvp.tools.Constants.Strings.FIELD_CITY;
+import static callisto.quotermvp.tools.Constants.Strings.FIELD_LATITUDE;
+import static callisto.quotermvp.tools.Constants.Strings.FIELD_LONGITUDE;
+import static callisto.quotermvp.tools.Constants.Strings.FIELD_OWNER;
+
 public class EstateDetailsModel {
+    private String identifier;
     private long estateId;
 
     private Uri uriContact;
 
     private String currentPhotoPath;
 
-    public EstateDetailsModel(long estateId) {
-        this.estateId = estateId;
+    private RealEstate realEstate;
+
+    public EstateDetailsModel(String identifier) {
+        this.identifier = identifier;
     }
 
     public Estate getEstate() {
         return Helper.getInstance().get(Estate.class, estateId);
     }
 
-    void storeInRealm(String address, String city, double lat, double lng, String owner) {
-        Estate estate = new Estate();
-        final Helper helper = Helper.getInstance();
+    void queryFirebaseForRealEstate() {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference().child(DB_ESTATES.getText());
 
-        estate.setId(estateId);
-        estate.setAddress(address);
-        estate.setCity(city);
-        estate.setLatitude(lat);
-        estate.setLongitude(lng);
-        estate.setOwner(owner);
-        estate.setPicturePath(currentPhotoPath);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> map;
 
-        if (helper.get(Estate.class, estateId) != null) {
-            helper.updateEstate(estate);
-        } else {
-            helper.save(estate);
-        }
-//        helper.save(estate);
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    //noinspection unchecked
+                    map = (HashMap<String, Object>) postSnapshot.getValue();
+
+                    RealEstate.Builder builder = new RealEstate.Builder();
+
+                    builder.setIdentifier(postSnapshot.getKey());
+
+                    builder.setAddress(map.get(FIELD_ADDRESS.getText()).toString());
+                    builder.setCity(map.get(FIELD_CITY.getText()).toString());
+                    builder.setLatitude((double) map.get(FIELD_LATITUDE.getText()));
+                    builder.setLongitude((double) map.get(FIELD_LONGITUDE.getText()));
+                    builder.setOwner(map.get(FIELD_OWNER.getText()).toString());
+
+                    try {
+                        Chamber room = new Chamber((double) map.get("surface"),
+                            map.get("name").toString());
+                        builder.addRoom(room);
+                    } catch (NullPointerException NPE) {
+                        Log.d("Caught null", "Estate has no rooms");
+                    }
+
+                    RealEstate estate = builder.build();
+
+                    if (estate.getIdentifier().equalsIgnoreCase(identifier)) {
+                        realEstate = estate;
+                        BusProvider.getInstance().post(new Events.QueriedEstateRetrievedEvent(estate));
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
     }
+
+    String storeInFirebase(String address, String city, double lat, double lng, String owner) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        RealEstate.Builder builder =
+            new RealEstate.Builder()
+            .setAddress(address)
+            .setCity(city)
+            .setLatitude(lat)
+            .setLongitude(lng)
+            .setOwner(owner);
+
+        DatabaseReference reference = database.getReference(DB_ESTATES.getText()).child(identifier);
+//        reference.push().setValue(builder.build());
+        reference.setValue(builder.build());
+
+        return reference.getKey();
+    }
+
+    RealEstate getRealEstate() {
+        return realEstate;
+    }
+
+    public void setRealEstate(RealEstate realEstate) {
+        this.realEstate = realEstate;
+    }
+
+//    void storeInRealm(String address, String city, double lat, double lng, String owner) {
+//        Estate estate = new Estate();
+//        final Helper helper = Helper.getInstance();
+//
+//        estate.setId(estateId);
+//        estate.setAddress(address);
+//        estate.setCity(city);
+//        estate.setLatitude(lat);
+//        estate.setLongitude(lng);
+//        estate.setOwner(owner);
+//        estate.setPicturePath(currentPhotoPath);
+//
+//        if (helper.get(Estate.class, estateId) != null) {
+//            helper.updateEstate(estate);
+//        } else {
+//            helper.save(estate);
+//        }
+////        helper.save(estate);
+//    }
 
     private ContentResolver getContentResolver() {
         return MapApplication.getAppContext().getContentResolver();
     }
-
 
     @SuppressWarnings("unused")
     // Reserved for future use
@@ -70,14 +165,8 @@ public class EstateDetailsModel {
             if (inputStream != null) {
                 photo = BitmapFactory.decodeStream(inputStream);
 
-                // TODO Move to view
-//                ImageView imageView = (ImageView) findViewById(R.id.img_contact);
-//                imageView.setImageBitmap(photo);
                 inputStream.close();
             }
-
-//            assert inputStream != null;
-//            inputStream.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -161,9 +250,14 @@ public class EstateDetailsModel {
     }
 
     File createImageFile() {
+        return getFile(identifier);
+    }
+
+    @Nullable
+    private File getFile(String identifier) {
         File image = null;
         try {
-            image = Imagery.getFile(Estate.class, estateId, 0);
+            image = Imagery.getFile(Estate.class, identifier, 0);
             currentPhotoPath = image.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
